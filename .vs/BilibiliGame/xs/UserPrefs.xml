@@ -1,0 +1,21 @@
+﻿<Properties StartupConfiguration="{0B5415D1-D3E6-6719-4C52-E339055890FF}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Manager/SoldierManager.cs">
+    <Files>
+      <File FileName="Assets/Scripts/Manager/SoldierManager.cs" Line="24" Column="21" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="BilibiliGame" expanded="True" selected="True" />
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="f92afeff-68c5-4061-9c16-1afd78809419" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

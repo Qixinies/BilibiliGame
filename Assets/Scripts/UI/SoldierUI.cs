@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,12 +16,18 @@ public class SoldierUI : MonoBehaviour
     public InputField indexInput;
     public Button attackBtn;
 
+    public Text redTotalAttackText;
+    public Text redTotalCureText;
+    public Text blueTotalAttackText;
+    public Text blueTotalCureText;
+
     private void Awake()
     {
-        if(instance == null)
+        if (instance == null)
         {
             instance = this;
-        } else if(instance != this)
+        }
+        else if (instance != this)
         {
             Destroy(gameObject);
         }
@@ -34,12 +39,16 @@ public class SoldierUI : MonoBehaviour
         {
             try
             {
-                if(input.text.StartsWith("A"))
+                if (input.text.StartsWith("A"))
                 {
                     int index = int.Parse(input.text.Replace("A", "")) - 1;
                     if (index >= 0 && index < SoldierManager.maxCount)
                     {
-                        if (redSoldierList[index].isDestroyed)
+                        if(!GameController.manager.soldierMan.CanEnterTeam(TeamType.Red))
+                        {
+                            Debug.LogError("红方队伍已满员");
+                        }
+                        else if (redSoldierList[index].isDestroyed)
                         {
                             Debug.LogError("红方当前位置已经被摧毁");
                         }
@@ -52,12 +61,17 @@ public class SoldierUI : MonoBehaviour
                             GameController.manager.soldierMan.SetSoldierState(TeamType.Red, index, true);
                         }
                     }
-                } else if(input.text.StartsWith("B"))
+                }
+                else if (input.text.StartsWith("B"))
                 {
                     int index = int.Parse(input.text.Replace("B", ""));
                     if (index >= 0 && index < SoldierManager.maxCount)
                     {
-                        if (blueSoldierList[index].isDestroyed)
+                        if (!GameController.manager.soldierMan.CanEnterTeam(TeamType.Blue))
+                        {
+                            Debug.LogError("蓝方队伍已满员");
+                        }
+                        else if (blueSoldierList[index].isDestroyed)
                         {
                             Debug.LogError("蓝方当前位置已经被摧毁");
                         }
@@ -71,7 +85,8 @@ public class SoldierUI : MonoBehaviour
                         }
                     }
                 }
-            } catch
+            }
+            catch
             {
 
             }
@@ -131,9 +146,9 @@ public class SoldierUI : MonoBehaviour
             try
             {
                 int index = int.Parse(indexInput.text) - 1;
-                if(index >= 0 & index < SoldierManager.maxCount)
+                if (index >= 0 & index < SoldierManager.maxCount)
                 {
-                    for(int i = 0; i < redSoldierList.Count; i++)
+                    for (int i = 0; i < redSoldierList.Count; i++)
                     {
                         redSoldierList[i].SetFocus(blueSoldierList[index]);
                     }
@@ -143,7 +158,8 @@ public class SoldierUI : MonoBehaviour
                         blueSoldierList[i].SetFocus(redSoldierList[index]);
                     }
                 }
-            } catch
+            }
+            catch
             {
 
             }
@@ -152,17 +168,23 @@ public class SoldierUI : MonoBehaviour
 
     public void Update()
     {
-        if(!GameController.manager.soldierMan.isDirty)
+        redTotalAttackText.text = "累计伤害 : " + GameController.manager.soldierMan.redTotalAttack.ToString("0.0");
+        redTotalCureText.text = "累计治疗 : " + Mathf.Abs(GameController.manager.soldierMan.redTotalCure).ToString("0.0");
+        blueTotalAttackText.text = "累计伤害 : " + GameController.manager.soldierMan.blueTotalAttack.ToString("0.0");
+        blueTotalCureText.text = "累计治疗 : " + Mathf.Abs(GameController.manager.soldierMan.blueTotalCure).ToString("0.0");
+
+        if (!GameController.manager.soldierMan.isDirty)
         {
             return;
         }
         GameController.manager.soldierMan.isDirty = false;
-        for(int i = 0; i < redSoldierList.Count; i++)
+        for (int i = 0; i < redSoldierList.Count; i++)
         {
             if (GameController.manager.soldierMan.redSoliderActiveStateList[i])
             {
                 redSoldierList[i].SetContent();
-            } else
+            }
+            else
             {
                 redSoldierList[i].EmptyContent();
             }
@@ -172,7 +194,8 @@ public class SoldierUI : MonoBehaviour
             if (GameController.manager.soldierMan.blueSoliderActiveStateList[i])
             {
                 blueSoldierList[i].SetContent();
-            } else
+            }
+            else
             {
                 blueSoldierList[i].EmptyContent();
             }

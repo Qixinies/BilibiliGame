@@ -19,30 +19,57 @@ public class SoldierManager
     public bool isDirty;
     public const int maxCount = 15;
 
-    public const int maxPlayerCount = 12;
+    public float redTotalAttack;
+    public float redTotalCure;
+    public float blueTotalAttack;
+    public float blueTotalCure;
+    
+    private int maxPlayerCount = 12;
+    private int redCount = 0;
+    private int blueCount = 0;
+    private bool initFinish = false;
 
     public void Init()
     {
         for(int i = 0; i < maxCount; i++)
         {
-            redSoliderActiveStateList.Add(true);
-            blueSoliderActiveStateList.Add(true);
+            redSoliderActiveStateList.Add(false);
+            blueSoliderActiveStateList.Add(false);
         }
+
+        for (int i = 0; i < maxCount; i++)
+        {
+            SetSoldierState(TeamType.Red, i, Random.Range(0, 1.0f) > 0.1f);
+            SetSoldierState(TeamType.Blue, i, Random.Range(0, 1.0f) > 0.1f);
+        }
+
         isDirty = true;
+        initFinish = true;
+    }
+
+    public bool CanEnterTeam(TeamType teamType)
+    {
+        return (teamType == TeamType.Red ? redCount : blueCount) < maxPlayerCount;
     }
 
     public void SetSoldierState(TeamType type, int index, bool state)
     {
-        if(index <0 || index >= maxCount)
+        if(index < 0 || index >= maxCount)
+        {
+            return;
+        }
+        if(state && !CanEnterTeam(type))
         {
             return;
         }
         if(type == TeamType.Red)
         {
             redSoliderActiveStateList[index] = state;
+            redCount += (state ? 1 : (initFinish ? -1 : 0));
         } else
         {
             blueSoliderActiveStateList[index] = state;
+            blueCount += (state ? 1 : (initFinish ? -1 : 0));
         }
         isDirty = true;
     }

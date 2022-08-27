@@ -80,7 +80,6 @@ public class SoldierItem : MonoBehaviour
         {
             contentGoList[i].gameObject.SetActive((int)soldierType == i);
         }
-        userNameText.text = "用户 " + Random.Range(0, 1000);
         switch (soldierType)
         {
             case SoldierType.Gun:

@@ -1,19 +1,38 @@
 ﻿<Properties StartupConfiguration="{0B5415D1-D3E6-6719-4C52-E339055890FF}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Manager/SoldierManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Manager/LiveManager.cs">
     <Files>
-      <File FileName="Assets/Scripts/Manager/SoldierManager.cs" Line="24" Column="21" />
+      <File FileName="Assets/3rd/BilibiliLive/README.md" Line="31" Column="22" />
+      <File FileName="Assets/Scripts/Manager/GameController.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/UI/SoldierUI.cs" Line="41" Column="10" />
+      <File FileName="Assets/Scripts/Manager/LiveManager.cs" Line="12" Column="3" />
+      <File FileName="Assets/Scripts/UI/SoldierItem.cs" Line="83" Column="1" />
+      <File FileName="Assets/Scripts/Manager/SoldierManager.cs" Line="42" Column="38" />
+      <File FileName="Assets/Scripts/Object/NewClass.cs" Line="14" Column="30" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
-          <Node name="BilibiliGame" expanded="True" selected="True" />
+          <Node name="BilibiliGame" expanded="True">
+            <Node name="Assets" expanded="True">
+              <Node name="Scripts" expanded="True">
+                <Node name="Manager" expanded="True">
+                  <Node name="LiveManager.cs" selected="True" />
+                </Node>
+                <Node name="Object" expanded="True" />
+                <Node name="UI" expanded="True" />
+              </Node>
+            </Node>
+          </Node>
         </State>
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State />
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="f92afeff-68c5-4061-9c16-1afd78809419" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="0d6510d4-fcae-49b1-9ad5-12f0f1b42b42" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

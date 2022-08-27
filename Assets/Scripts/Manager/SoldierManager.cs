@@ -25,8 +25,8 @@ public class SoldierManager
     {
         for(int i = 0; i < maxCount; i++)
         {
-            redSoliderActiveStateList.Add(true);
-            blueSoliderActiveStateList.Add(true);
+            redSoliderActiveStateList.Add(false);
+            blueSoliderActiveStateList.Add(false);
         }
         isDirty = true;
     }

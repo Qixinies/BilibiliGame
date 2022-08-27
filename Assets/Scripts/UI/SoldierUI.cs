@@ -28,52 +28,57 @@ public class SoldierUI : MonoBehaviour
         }
     }
 
+    public SoldierItem SetSoldier(TeamType teamType,int index)
+    {
+        Debug.Log("SET SOLDIER");
+        List<SoldierItem> soldierList;
+        if (teamType == TeamType.Red)
+        {
+            soldierList = redSoldierList;
+        } else
+        {
+            soldierList = blueSoldierList;
+        }
+
+        if (index >= 0 && index < SoldierManager.maxCount)
+        {
+            if (soldierList[index].isDestroyed)
+            {
+                Debug.LogError("当前位置已经被摧毁");
+            }
+            else if (soldierList[index].isUsed)
+            {
+                Debug.LogError("当前位置已经被使用");
+            }
+            else
+            {
+                GameController.manager.soldierMan.SetSoldierState(teamType, index, true);
+                if (teamType == TeamType.Red)
+                {
+                    return redSoldierList[index];
+                }
+                else
+                {
+                    return blueSoldierList[index];
+
+                }
+            }
+        }
+        return null;
+    }
+
     private void Start()
     {
         addBtn.onClick.AddListener(() =>
         {
-            try
+            if(input.text.StartsWith("A"))
             {
-                if(input.text.StartsWith("A"))
-                {
-                    int index = int.Parse(input.text.Replace("A", "")) - 1;
-                    if (index >= 0 && index < SoldierManager.maxCount)
-                    {
-                        if (redSoldierList[index].isDestroyed)
-                        {
-                            Debug.LogError("红方当前位置已经被摧毁");
-                        }
-                        else if (redSoldierList[index].isUsed)
-                        {
-                            Debug.LogError("红方当前位置已经被使用");
-                        }
-                        else
-                        {
-                            GameController.manager.soldierMan.SetSoldierState(TeamType.Red, index, true);
-                        }
-                    }
-                } else if(input.text.StartsWith("B"))
-                {
-                    int index = int.Parse(input.text.Replace("B", ""));
-                    if (index >= 0 && index < SoldierManager.maxCount)
-                    {
-                        if (blueSoldierList[index].isDestroyed)
-                        {
-                            Debug.LogError("蓝方当前位置已经被摧毁");
-                        }
-                        else if (blueSoldierList[index].isUsed)
-                        {
-                            Debug.LogError("蓝方当前位置已经被使用");
-                        }
-                        else
-                        {
-                            GameController.manager.soldierMan.SetSoldierState(TeamType.Blue, index, true);
-                        }
-                    }
-                }
-            } catch
+                int index = int.Parse(input.text.Replace("A", "")) - 1;
+                SetSoldier(TeamType.Red, index);
+            } else if(input.text.StartsWith("B"))
             {
-
+                int index = int.Parse(input.text.Replace("B", ""));
+                SetSoldier(TeamType.Blue, index);
             }
         });
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
 
 public enum SoldierType
 {
@@ -32,7 +32,10 @@ public class SoldierItem : MonoBehaviour
     public bool isUsed;
     public BulletItem bulletItemPrefab;
     public SoldierItem focusItem;
+    public int index;
 
+    private float totalAttack;
+    private float levelUpValue = 20;
     private float cd;
 
     public float HP
@@ -64,7 +67,8 @@ public class SoldierItem : MonoBehaviour
     private void Start()
     {
         EmptyContent();
-        indexText.text = (transform.GetSiblingIndex() + 1).ToString();
+        index = transform.GetSiblingIndex();
+        indexText.text = (index + 1).ToString();
         isDestroyed = false;
         destroyGo.SetActive(false);
     }
@@ -126,6 +130,8 @@ public class SoldierItem : MonoBehaviour
             contentGoList[i].gameObject.SetActive(false);
         }
         userNameText.text = "暂无用户";
+        totalAttack = 0;
+        cd = 0;
     }
 
     public void DestroySelf()
@@ -134,6 +140,16 @@ public class SoldierItem : MonoBehaviour
         hpSlider.value = 0;
         destroyGo.SetActive(true);
     }
+
+    private void CheckLevelUp()
+    {
+        if(totalAttack >= levelUpValue)
+        {
+            totalAttack -= levelUpValue;
+            UpgradeLevel();
+        }
+    }
+    
 
     private void Update()
     {
@@ -145,7 +161,7 @@ public class SoldierItem : MonoBehaviour
         {
             DestroySelf();
         }
-        levelText.text = soldierInfo.level.ToString();
+        levelText.text = "Lv." + soldierInfo.level.ToString();
         hpSlider.value = HP / soldierInfo.maxHp;
 
         cd -= Time.deltaTime;
@@ -153,6 +169,7 @@ public class SoldierItem : MonoBehaviour
         {
             cd = soldierInfo.cd;
             Attack();
+            CheckLevelUp();
         }
     }
 
@@ -160,18 +177,27 @@ public class SoldierItem : MonoBehaviour
     {
         // 寻找最近的Item
         SoldierItem attackItem = null;
-        if (focusItem == null || !focusItem.isUsed || focusItem.isDestroyed)
+        // 如果锁定的item无效则更新
+        if (focusItem != null && (!focusItem.isUsed || focusItem.isDestroyed))
         {
+            focusItem = null;
+        }
+
+        if (focusItem == null)
+        {
+            int minDistance = int.MaxValue;
             if (soldierInfo.attackEnemy)
             {
                 if (teamType == TeamType.Red)
                 {
                     for (int i = 0; i < SoldierUI.instance.blueSoldierList.Count; i++)
                     {
-                        if (SoldierUI.instance.blueSoldierList[i].isUsed && !SoldierUI.instance.blueSoldierList[i].isDestroyed)
+
+                        if (SoldierUI.instance.blueSoldierList[i].isUsed && !SoldierUI.instance.blueSoldierList[i].isDestroyed
+                            && GetDistance(SoldierUI.instance.blueSoldierList[i].index) < minDistance)
                         {
+                            minDistance = GetDistance(SoldierUI.instance.blueSoldierList[i].index);
                             attackItem = SoldierUI.instance.blueSoldierList[i];
-                            break;
                         }
                     }
                 }
@@ -179,10 +205,11 @@ public class SoldierItem : MonoBehaviour
                 {
                     for (int i = 0; i < SoldierUI.instance.redSoldierList.Count; i++)
                     {
-                        if (SoldierUI.instance.redSoldierList[i].isUsed && !SoldierUI.instance.redSoldierList[i].isDestroyed)
+                        if (SoldierUI.instance.redSoldierList[i].isUsed && !SoldierUI.instance.redSoldierList[i].isDestroyed
+                            && GetDistance(SoldierUI.instance.redSoldierList[i].index) < minDistance)
                         {
+                            minDistance = GetDistance(SoldierUI.instance.redSoldierList[i].index);
                             attackItem = SoldierUI.instance.redSoldierList[i];
-                            break;
                         }
                     }
                 }
@@ -194,10 +221,11 @@ public class SoldierItem : MonoBehaviour
                     for (int i = 0; i < SoldierUI.instance.redSoldierList.Count; i++)
                     {
                         if (SoldierUI.instance.redSoldierList[i].isUsed && !SoldierUI.instance.redSoldierList[i].isDestroyed
-                            && SoldierUI.instance.redSoldierList[i].HP < SoldierUI.instance.redSoldierList[i].soldierInfo.maxHp)
+                            && SoldierUI.instance.redSoldierList[i].HP < SoldierUI.instance.redSoldierList[i].soldierInfo.maxHp
+                            && GetDistance(SoldierUI.instance.redSoldierList[i].index) < minDistance)
                         {
+                            minDistance = GetDistance(SoldierUI.instance.redSoldierList[i].index);
                             attackItem = SoldierUI.instance.redSoldierList[i];
-                            break;
                         }
                     }
                 }
@@ -206,15 +234,17 @@ public class SoldierItem : MonoBehaviour
                     for (int i = 0; i < SoldierUI.instance.blueSoldierList.Count; i++)
                     {
                         if (SoldierUI.instance.blueSoldierList[i].isUsed && !SoldierUI.instance.blueSoldierList[i].isDestroyed
-                            && SoldierUI.instance.blueSoldierList[i].HP < SoldierUI.instance.blueSoldierList[i].soldierInfo.maxHp)
+                            && SoldierUI.instance.blueSoldierList[i].HP < SoldierUI.instance.blueSoldierList[i].soldierInfo.maxHp
+                            && GetDistance(SoldierUI.instance.blueSoldierList[i].index) < minDistance)
                         {
+                            minDistance = GetDistance(SoldierUI.instance.blueSoldierList[i].index);
                             attackItem = SoldierUI.instance.blueSoldierList[i];
-                            break;
                         }
                     }
                 }
             }
-        } else
+        }
+        else
         {
             attackItem = focusItem;
         }
@@ -225,12 +255,58 @@ public class SoldierItem : MonoBehaviour
             bulletItem.transform.SetParent(SoldierUI.instance.transform, false);
             bulletItem.transform.position = transform.position;
             bulletItem.SetContent(soldierInfo, soldierType);
-            float time = Vector3.Distance(attackItem.transform.position, transform.position) / 800.0f;
+            float time = Vector3.Distance(attackItem.transform.position, transform.position) / 1600.0f;
             DOTween.To(() => bulletItem.transform.position, x => bulletItem.transform.position = x, attackItem.transform.position, time).OnComplete(() =>
             {
-                bulletItem.CheckAttack(attackItem);
-            });
+                float attackValue = bulletItem.CheckAttack(attackItem);
+                totalAttack += attackValue;
+                if(soldierInfo.attackEnemy)
+                {
+                    if(teamType == TeamType.Red)
+                    {
+                        GameController.manager.soldierMan.redTotalAttack += attackValue;
+                    } else
+                    {
+                        GameController.manager.soldierMan.blueTotalAttack += attackValue;
+                    }
+                } else
+                {
+                    if (teamType == TeamType.Red)
+                    {
+                        GameController.manager.soldierMan.redTotalCure += attackValue;
+                    }
+                    else
+                    {
+                        GameController.manager.soldierMan.blueTotalCure += attackValue;
+                    }
+                }
+                if (attackItem.isDestroyed)
+                {
+                    UpgradeLevel();
+                }
+            }).SetEase(Ease.Linear);
         }
+    }
+
+    private void UpgradeLevel()
+    {
+        soldierInfo.level += 1;
+        HP = soldierInfo.maxHp;
+    }
+
+
+
+    private int GetDistance(int targetIndex)
+    {
+        if (targetIndex < 0 || targetIndex >= SoldierManager.maxCount)
+        {
+            return int.MaxValue;
+        }
+        int curRow = index / 3;
+        int curCol = index % 3;
+        int targetRow = targetIndex / 3;
+        int targetCol = targetIndex % 3;
+        return Mathf.Abs(targetRow - curRow) + (teamType == TeamType.Red ? (2 - curCol) + targetCol : curCol + (2 - targetCol));
     }
 
 }

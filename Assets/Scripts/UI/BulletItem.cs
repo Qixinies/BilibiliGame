@@ -13,71 +13,74 @@ public class BulletItem : MonoBehaviour
         curType = type;
     }
 
-    public void CheckAttack(SoldierItem item)
+    public float CheckAttack(SoldierItem item)
     {
         Destroy(gameObject);
         if (!item.isUsed || item.isDestroyed)
         {
-            return;
+            return 0;
         }
+        float result = 0;
         switch(curType)
         {
             case SoldierType.Gun:
-                item.HP -= info.attackValue;
+                result = info.attackValue * (1.0f + 0.4f * info.level);
+                item.HP -= result;
                 break;
             case SoldierType.Cannon:
-                item.HP -= info.attackValue;
+                result = info.attackValue * (1.0f + 0.3f * info.level);
+                item.HP -= result;
                 // 范围攻击
                 int index = item.transform.GetSiblingIndex();
                 int col = index % 3;
-                Debug.LogError(col + " - " + index);
                 if (index + 3 < SoldierManager.maxCount)
                 {
                     // bottom
                     var t = item.transform.parent.GetChild(index + 3).GetComponent<SoldierItem>();
                     if (t.isUsed && !t.isDestroyed)
                     {
-                        t.HP -= info.attackValue * 0.1f;
+                        result += info.attackValue * 0.1f * (1.0f + 0.1f * info.level);
+                        t.HP -= info.attackValue * 0.1f * (1.0f + 0.1f * info.level);
                     }
                 }
                 if (index - 3 >= 0)
                 {
                     // top
-                    Debug.LogError("top");
                     var t = item.transform.parent.GetChild(index - 3).GetComponent<SoldierItem>();
                     if (t.isUsed && !t.isDestroyed)
                     {
-                        t.HP -= info.attackValue * 0.1f;
+                        result += info.attackValue * 0.1f * (1.0f + 0.1f * info.level);
+                        t.HP -= info.attackValue * 0.1f * (1.0f + 0.1f * info.level);
                     }
                 }
                 if (col - 1 >= 0)
                 {
                     // left
-                    Debug.LogError("left");
                     var t = item.transform.parent.GetChild(index - 1).GetComponent<SoldierItem>();
                     if (t.isUsed && !t.isDestroyed)
                     {
-                        t.HP -= info.attackValue * 0.1f;
+                        result += info.attackValue * 0.1f * (1.0f + 0.1f * info.level);
+                        t.HP -= info.attackValue * 0.1f * (1.0f + 0.1f * info.level);
                     }
                 }
                 if (col + 1 < 3)
                 {
                     // right
-                    Debug.LogError("right");
                     var t = item.transform.parent.GetChild(index + 1).GetComponent<SoldierItem>();
                     if (t.isUsed && !t.isDestroyed)
                     {
-                        t.HP -= info.attackValue * 0.1f;
+                        result += info.attackValue * 0.1f * (1.0f + 0.1f * info.level);
+                        t.HP -= info.attackValue * 0.1f * (1.0f + 0.1f * info.level);
                     }
                 }
- 
-
                 break;
             case SoldierType.Cure:
-                item.HP -= info.attackValue;
+                result = info.attackValue * (1.0f + 0.5f * info.level);
+                item.HP -= result;
                 break;
             default:
                 break;
         }
+        return result;
     }
 }

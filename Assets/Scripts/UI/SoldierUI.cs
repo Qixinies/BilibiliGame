@@ -33,11 +33,10 @@ public class SoldierUI : MonoBehaviour
         }
     }
 
-    public SoldierItem SetSoldier(TeamType teamType,int index)
+    public SoldierItem SetSoldier(User user)
     {
-        Debug.Log("SET SOLDIER");
         List<SoldierItem> soldierList;
-        if (teamType == TeamType.Red)
+        if (user.teamType == TeamType.Red)
         {
             soldierList = redSoldierList;
         } else
@@ -45,26 +44,26 @@ public class SoldierUI : MonoBehaviour
             soldierList = blueSoldierList;
         }
 
-        if (index >= 0 && index < SoldierManager.maxCount)
+        if (user.index >= 0 && user.index < SoldierManager.maxCount)
         {
-            if (soldierList[index].isDestroyed)
+            if (soldierList[user.index].isDestroyed)
             {
                 Debug.LogError("当前位置已经被摧毁");
             }
-            else if (soldierList[index].isUsed)
+            else if (soldierList[user.index].isUsed)
             {
                 Debug.LogError("当前位置已经被使用");
             }
             else
             {
-                GameController.manager.soldierMan.SetSoldierState(teamType, index, true);
-                if (teamType == TeamType.Red)
+                GameController.manager.soldierMan.SetSoldierState(user.teamType, user.index, true);
+                if (user.teamType == TeamType.Red)
                 {
-                    return redSoldierList[index];
+                    return redSoldierList[user.index];
                 }
                 else
                 {
-                    return blueSoldierList[index];
+                    return blueSoldierList[user.index];
 
                 }
             }
@@ -79,11 +78,11 @@ public class SoldierUI : MonoBehaviour
             if(input.text.StartsWith("A"))
             {
                 int index = int.Parse(input.text.Replace("A", "")) - 1;
-                SetSoldier(TeamType.Red, index);
+                SetSoldier(new User(null, null, TeamType.Red, index));
             } else if(input.text.StartsWith("B"))
             {
                 int index = int.Parse(input.text.Replace("B", ""));
-                SetSoldier(TeamType.Blue, index);
+                SetSoldier(new User(null, null, TeamType.Blue, index));
             }
         });
 

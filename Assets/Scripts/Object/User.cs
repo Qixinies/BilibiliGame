@@ -3,10 +3,10 @@ using UnityEngine;
 
 public class User
 {
-    string username;
-    Sprite avatar;
-    TeamType teamType;
-    int index;
+    public string username;
+    public Sprite avatar;
+    public TeamType teamType;
+    public int index;
 
     public User(string username, Sprite avatar, TeamType teamType, int index)
     {

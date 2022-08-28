@@ -39,8 +39,8 @@ public class SoldierManager
 
         for (int i = 0; i < maxCount; i++)
         {
-            SetSoldierState(TeamType.Red, i, Random.Range(0, 1.0f) > 0.1f);
-            SetSoldierState(TeamType.Blue, i, Random.Range(0, 1.0f) > 0.1f);
+            SetSoldierState(TeamType.Red, i, false);
+            SetSoldierState(TeamType.Blue, i, false);
         }
 
         isDirty = true;
